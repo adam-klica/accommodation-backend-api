@@ -2,8 +2,17 @@ const accomodationService = require("../services/AccommodationService");
 
 exports.getAllAccomodations = async (req, res) => {
   try {
-    const blogs = await accomodationService.getAllAccomodations();
-    res.json({ data: blogs, status: "success" });
+    const { rating, city, reputationBadge, availability, category } = req.query;
+    
+    const filters = {};
+    if (rating) filters.rating = rating;
+    if (city) filters.city = city;
+    if (reputationBadge) filters.reputationBadge = reputationBadge;
+    if (availability) filters.availability = { $gte: Number(availability) }; 
+    if (category) filters.category = category;
+    
+    const accommodations = await accomodationService.getAllAccomodations(filters);
+    res.json({ data: accommodations, status: "success" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -11,8 +20,8 @@ exports.getAllAccomodations = async (req, res) => {
 
 exports.createAccomodation = async (req, res) => {
   try {
-    const blog = await accomodationService.createAccomodation(req.body);
-    res.json({ data: blog, status: "success" });
+    const accommodation = await accomodationService.createAccomodation(req.body);
+    res.json({ data: accommodation, status: "success" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -20,8 +29,8 @@ exports.createAccomodation = async (req, res) => {
 
 exports.getAccomodationById = async (req, res) => {
   try {
-    const blog = await accomodationService.getAllAccomodationById(req.params.id);
-    res.json({ data: blog, status: "success" });
+    const accommodation = await accomodationService.getAllAccomodationById(req.params.id);
+    res.json({ data: accommodation, status: "success" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -29,8 +38,8 @@ exports.getAccomodationById = async (req, res) => {
 
 exports.updateAccomodation = async (req, res) => {
   try {
-    const blog = await accomodationService.updateAccomodation(req.params.id, req.body);
-    res.json({ data: blog, status: "success" });
+    const accommodation = await accomodationService.updateAccomodation(req.params.id, req.body);
+    res.json({ data: accommodation, status: "success" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -38,8 +47,8 @@ exports.updateAccomodation = async (req, res) => {
 
 exports.deleteAccomodation = async (req, res) => {
   try {
-    const blog = await accomodationService.deleteAccomodation(req.params.id);
-    res.json({ data: blog, status: "success" });
+    const accommodation = await accomodationService.deleteAccomodation(req.params.id);
+    res.json({ id: accommodation._id, status: "success" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
